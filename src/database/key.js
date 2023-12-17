@@ -1,0 +1,3 @@
+export const url = "https://ziwajwpvnkcnlzamebez.supabase.co";
+export const key =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inppd2Fqd3B2bmtjbmx6YW1lYmV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDI1MzgzNzksImV4cCI6MjAxODExNDM3OX0.jARly7pIDEYxTmMMABBsEu6eIP3CoBe2AAcXkPxxcdo";
