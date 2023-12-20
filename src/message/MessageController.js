@@ -1,8 +1,9 @@
-import { useState, useEffect, useCallback } from "react";
-import { getChatData } from "../database/api";
-import MessageItem from "./MessageItem";
-import { Messages } from "./MessageItemCss";
-import $ from "jquery";
+import { useState, useEffect, useCallback } from 'react';
+import { getChatData } from '../database/api';
+import { MessageItem, DateItem } from './MessageItem';
+import { MessageText, Messages } from './MessageCss';
+import $ from 'jquery';
+import { type } from '@testing-library/user-event/dist/type';
 
 const MessageController = () => {
   const [chatData, setChatData] = useState(new Array());
@@ -13,15 +14,8 @@ const MessageController = () => {
   useEffect(() => {
     getChatData().then((result) => {
       let tempData = new Map();
-      for (
-        let i = result.length - 1;
-        i > Math.max(result.length - 10, 0);
-        i--
-      ) {
-        let arr =
-          tempData.get(result[i].date) == null
-            ? new Array()
-            : tempData.get(result[i].date);
+      for (let i = result.length - 1; i > Math.max(result.length - 20, 0); i--) {
+        let arr = tempData.get(result[i].date) == null ? new Array() : tempData.get(result[i].date);
         arr.unshift(result[i]);
         tempData.set(result[i].date, arr);
       }
@@ -35,26 +29,20 @@ const MessageController = () => {
   }, []);
 
   useEffect(() => {
-    $("#messages").scrollTop(
-      pastHeight === 0
-        ? $("#messages").prop("scrollHeight")
-        : $("#messages").prop("scrollHeight") - pastHeight
+    $('#messages').scrollTop(
+      pastHeight === 0 ? $('#messages').prop('scrollHeight') : $('#messages').prop('scrollHeight') - pastHeight
     );
-    setPastHeight($("#messages").prop("scrollHeight"));
+    setPastHeight($('#messages').prop('scrollHeight'));
   }, [showData]);
 
   const handleScroll = (event) => {
     if (event.currentTarget.scrollTop === 0) {
-      console.log($("#messages").height());
       let tempData = new Map();
       let start = chatData.length - 1;
-      let end = Math.max(chatData.length - count - 2, 0);
+      let end = Math.max(chatData.length - count - 20, 0);
 
       for (let i = start; i > end; i--) {
-        let arr =
-          tempData.get(chatData[i].date) == null
-            ? new Array()
-            : tempData.get(chatData[i].date);
+        let arr = tempData.get(chatData[i].date) == null ? new Array() : tempData.get(chatData[i].date);
         arr.unshift(chatData[i]);
         tempData.set(chatData[i].date, arr);
       }
@@ -71,9 +59,9 @@ const MessageController = () => {
       {showData.map((element) => {
         return (
           <div key={element[0]}>
-            <div>{element[0]}</div>
-            {element[1].map((item) => {
-              return <MessageItem params={item}></MessageItem>;
+            <DateItem date={element[0]}></DateItem>
+            {element[1].map((item, index) => {
+              return <MessageItem params={item} key={index}></MessageItem>;
             })}
           </div>
         );

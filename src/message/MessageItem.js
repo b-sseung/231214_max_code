@@ -1,19 +1,25 @@
-import { Message, Profile } from "./MessageItemCss";
+import { Message, Profile, DateBox, Date, Name, MessageText, TimeBox } from './MessageCss';
 
-const MessageItem = (params) => {
-  const { date, time, send_name, message } = params["params"];
+export const DateItem = ({ date }) => {
+  return (
+    <DateBox>
+      <Date>{date}</Date>
+    </DateBox>
+  );
+};
+
+export const MessageItem = (params) => {
+  const { date, time, send_name, message } = params['params'];
   return (
     <Message key={`${date}${time}`}>
       <Profile></Profile>
       <div>
-        <p>{send_name}</p>
-        <p>{message}</p>
+        <Name>{send_name}</Name>
+        <MessageText>{message.indexOf('\\n') !== -1 ? message.replace('\\n', '\n') : message}</MessageText>
       </div>
-      <div>
+      <TimeBox>
         <span>{time}</span>
-      </div>
+      </TimeBox>
     </Message>
   );
 };
-
-export default MessageItem;
