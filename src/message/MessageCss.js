@@ -7,6 +7,14 @@ export const Messages = styled.div(
 
     display: flex;
     flex-direction: column;
+
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+    &::-webkit-scrollbar-thumb {
+      border-radius: 2px;
+      background: #ccc;
+    }
   `
 );
 
@@ -20,7 +28,7 @@ export const Message = styled.div(
   `
 );
 
-export const Profile = styled.div(
+export const Profile = styled.img(
   css`
     width: 50px;
     height: 50px;
@@ -31,6 +39,8 @@ export const Profile = styled.div(
     border-radius: 100px;
 
     background: black;
+
+    object-fit: cover;
   `
 );
 
@@ -67,6 +77,15 @@ export const MessageText = styled.div(
     padding: 10px 15px;
 
     border-radius: 5px 15px 15px 15px;
+  `
+);
+
+export const MessageImage = styled.img(
+  css`
+    width: min(250px, 50vw);
+    object-fit: cover;
+
+    cursor: pointer;
   `
 );
 

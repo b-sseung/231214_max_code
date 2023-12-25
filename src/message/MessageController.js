@@ -1,32 +1,66 @@
 import { useState, useEffect, useCallback } from 'react';
-import { getChatData } from '../database/api';
+import { getImageBaseUrl, getChatData } from '../database/api';
 import { MessageItem, DateItem } from './MessageItem';
 import { MessageText, Messages } from './MessageCss';
 import $ from 'jquery';
-import { type } from '@testing-library/user-event/dist/type';
 
 const MessageController = () => {
   const [chatData, setChatData] = useState(new Array());
   const [showData, setShowData] = useState(new Array());
   const [count, setCount] = useState(0);
   const [pastHeight, setPastHeight] = useState();
+  const [imageBaseUrl, setImageBaseUrl] = useState('');
+  const [profileImage, setProfileImage] = useState('');
 
   useEffect(() => {
-    getChatData().then((result) => {
-      let tempData = new Map();
-      for (let i = result.length - 1; i > Math.max(result.length - 20, 0); i--) {
-        let arr = tempData.get(result[i].date) == null ? new Array() : tempData.get(result[i].date);
-        arr.unshift(result[i]);
-        tempData.set(result[i].date, arr);
-      }
-
-      let tempDataAsc = [...tempData];
-
-      setChatData(result);
-      setCount(10);
-      setShowData(tempDataAsc.sort());
+    getImageBaseUrl('images').then((result) => {
+      setImageBaseUrl(result);
+      return result;
     });
   }, []);
+
+  useEffect(() => {
+    getChatData()
+      .then((result) => {
+        let lastName = '';
+        let firstFile = 0;
+        let cnt = 1;
+
+        for (let i = 0; i < result.length; i++) {
+          if (result[i].message !== '(사진)') continue;
+
+          let filename = result[i].date.replaceAll('/', '');
+
+          if (lastName === result[i].date) {
+            if (cnt === 1) result[firstFile].fileName = `${filename} (${cnt})`;
+
+            cnt++;
+            result[i].fileName = `${filename} (${cnt})`;
+          } else {
+            lastName = result[i].date;
+            cnt = 1;
+            firstFile = i;
+            result[i].fileName = filename;
+          }
+        }
+
+        return result;
+      })
+      .then((result) => {
+        let tempData = new Map();
+        for (let i = result.length - 1; i > Math.max(result.length - 20, 0); i--) {
+          let arr = tempData.get(result[i].date) == null ? new Array() : tempData.get(result[i].date);
+          arr.unshift(result[i]);
+          tempData.set(result[i].date, arr);
+        }
+
+        let tempDataAsc = [...tempData];
+
+        setChatData(result);
+        setCount(10);
+        setShowData(tempDataAsc.sort());
+      });
+  }, [imageBaseUrl]);
 
   useEffect(() => {
     $('#messages').scrollTop(
@@ -61,7 +95,7 @@ const MessageController = () => {
           <div key={element[0]}>
             <DateItem date={element[0]}></DateItem>
             {element[1].map((item, index) => {
-              return <MessageItem params={item} key={index}></MessageItem>;
+              return <MessageItem params={item} imageUrl={imageBaseUrl} key={index}></MessageItem>;
             })}
           </div>
         );
