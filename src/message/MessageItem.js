@@ -2,15 +2,6 @@ import { Message, Profile, DateBox, Date, Name, MessageText, MessageImage, TimeB
 import { getImageUrl } from '../database/api';
 import { useMemo, useState, useEffect } from 'react';
 
-const callImageUrl = async (table, filename) => {
-  const result = await getImageUrl(table, filename).then((res) => {
-    console.log(res['publicUrl']);
-    return res['publicUrl'];
-  });
-
-  return result;
-};
-
 export const DateItem = ({ date }) => {
   return (
     <DateBox>
